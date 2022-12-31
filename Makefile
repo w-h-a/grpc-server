@@ -17,21 +17,13 @@ tidy:
 
 .PHONY: test
 test:
-	go test -v -ract ./...
+	go test -v -race ./...
 
 LOCAL_TAG ?= v0.0.1
 
 .PHONY: build-local-image
 build-local-image:
 	docker build -t github.com/w-h-a/grpc-server:$(LOCAL_TAG) .
-
-.PHONY: run-local-server
-run-local-server:
-	docker run -d -p 8400:8400 --rm --name grpc-server github.com/w-h-a/grpc-server:$(LOCAL_TAG)
-
-.PHONY: stop-local-server
-stop-local-server:
-	docker stop grpc-server
 
 .PHONY: create-kind
 create-kind:
