@@ -98,5 +98,44 @@ func testProduceConsume(t *testing.T, client contracts.EndpointsClient) {
 }
 
 func testProduceConsumeStream(t *testing.T, client contracts.EndpointsClient) {
+	ctx := context.Background()
+	records := []*contracts.Record{
+		{
+			Value: "first message",
+			Index: 0,
+		},
+		{
+			Value: "second message",
+			Index: 1,
+		},
+	}
 
+	{
+		produceStream, err := client.ProduceStream(ctx)
+		require.NoError(t, err)
+
+		for idx, record := range records {
+			err = produceStream.Send(&contracts.ProduceRequest{Record: record})
+			require.NoError(t, err)
+
+			response, err := produceStream.Recv()
+			require.NoError(t, err)
+
+			if response.Index != uint64(idx) {
+				t.Fatalf("got offset: %d, want: %d", response.Index, idx)
+			}
+		}
+	}
+
+	{
+		consumeStream, err := client.ConsumeStream(ctx, &contracts.ConsumeRequest{Index: 0})
+		require.NoError(t, err)
+
+		for idx, record := range records {
+			response, err := consumeStream.Recv()
+			require.NoError(t, err)
+
+			require.Equal(t, &contracts.Record{Value: record.Value, Index: uint64(idx)}, response.Record)
+		}
+	}
 }
