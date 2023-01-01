@@ -16,14 +16,12 @@ type Agent struct {
 	server *grpc.Server
 
 	shutdown     bool
-	shutdowns    chan struct{}
 	shutdownLock sync.Mutex
 }
 
 func NewAgent(config Config) (*Agent, error) {
 	a := &Agent{
-		Config:    config,
-		shutdowns: make(chan struct{}),
+		Config: config,
 	}
 
 	setup := []func() error{
@@ -88,8 +86,6 @@ func (a *Agent) Shutdown() error {
 	}
 
 	a.shutdown = true
-
-	close(a.shutdowns)
 
 	shutdowns := []func() error{
 		func() error {
