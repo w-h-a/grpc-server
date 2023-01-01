@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -61,8 +60,6 @@ func (c *cli) run(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(agent.Config.RPCAddr())
 
 	sigChan := make(chan os.Signal, 1)
 
