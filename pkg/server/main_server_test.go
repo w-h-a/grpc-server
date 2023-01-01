@@ -36,14 +36,14 @@ func setupTest(t *testing.T) (client contracts.EndpointsClient, teardown func())
 	require.NoError(t, err)
 
 	// setup server
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
-	require.NoError(t, err)
-
 	cfg := &Config{CommitLog: log}
 
 	server, err := NewGRPCServer(cfg)
 	require.NoError(t, err)
-
+	
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	
 	go func() {
 		server.Serve(listener)
 	}()
