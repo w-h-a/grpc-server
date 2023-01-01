@@ -40,10 +40,10 @@ func setupTest(t *testing.T) (client contracts.EndpointsClient, teardown func())
 
 	server, err := NewGRPCServer(cfg)
 	require.NoError(t, err)
-	
+
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
-	
+
 	go func() {
 		server.Serve(listener)
 	}()
@@ -73,15 +73,12 @@ func testConsumeBeyondRange(t *testing.T, client contracts.EndpointsClient) {
 	require.NoError(t, err)
 
 	consumeResponse, err := client.Consume(ctx, &contracts.ConsumeRequest{Index: produceResponse.Index + 1})
-	if consumeResponse != nil {
-		t.Fatal("consume is not nil")
-	}
+	require.Nil(t, consumeResponse)
+	require.Error(t, err)
 
 	got := status.Code(err)
 	want := status.Code(contracts.ErrIndexOutOfRange{}.GRPCStatus().Err())
-	if got != want {
-		t.Fatalf("got err: %v, want: %v", got, want)
-	}
+	require.Equal(t, want, got)
 }
 
 func testProduceConsume(t *testing.T, client contracts.EndpointsClient) {
@@ -121,9 +118,7 @@ func testProduceConsumeStream(t *testing.T, client contracts.EndpointsClient) {
 			response, err := produceStream.Recv()
 			require.NoError(t, err)
 
-			if response.Index != uint64(idx) {
-				t.Fatalf("got offset: %d, want: %d", response.Index, idx)
-			}
+			require.Equal(t, uint64(idx), response.Index)
 		}
 	}
 
