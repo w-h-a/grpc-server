@@ -68,7 +68,7 @@ func (c *cli) run(cmd *cobra.Command, args []string) error {
 
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
-	<- sigChan
+	<-sigChan
 
 	return agent.Shutdown()
 }

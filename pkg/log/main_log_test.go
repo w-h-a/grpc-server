@@ -40,7 +40,6 @@ func testAppendRead(t *testing.T, log *Log) {
 	}
 }
 
-
 func testIndexOutOfRange(t *testing.T, log *Log) {
 	record, err := log.Read(numOfWrites)
 	require.Nil(t, record)

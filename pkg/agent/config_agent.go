@@ -6,7 +6,7 @@ import (
 
 type Config struct {
 	RPCHost string
-	RPCPort  int
+	RPCPort int
 }
 
 func (c Config) RPCAddr() (string, error) {
