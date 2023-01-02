@@ -52,3 +52,4 @@ teardown-local-container:
 .PHONY: delete-kind
 delete-kind:
 	kind delete cluster
+	
