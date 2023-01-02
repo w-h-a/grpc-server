@@ -45,6 +45,10 @@ deploy-local-container:
 port-forward:
 	kubectl port-forward service/grpc-server 8400:8400
 
+.PHONY: k8s-server-logs
+k8s-server-logs:
+	kubectl logs deployment.apps/grpc-server
+
 .PHONY: health-probe
 health-probe:
 	grpc-health-probe -addr=localhost:8400
