@@ -6,6 +6,7 @@ import (
 
 	"github.com/w-h-a/grpc-server/pkg/log"
 	"github.com/w-h-a/grpc-server/pkg/server"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -25,6 +26,7 @@ func NewAgent(config Config) (*Agent, error) {
 	}
 
 	setup := []func() error{
+		a.setupLogger,
 		a.setupLog,
 		a.setupServer,
 	}
@@ -37,6 +39,17 @@ func NewAgent(config Config) (*Agent, error) {
 	}
 
 	return a, nil
+}
+
+func (a *Agent) setupLogger() error {
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		return err
+	}
+
+	zap.ReplaceGlobals(logger)
+	
+	return nil
 }
 
 func (a *Agent) setupLog() error {

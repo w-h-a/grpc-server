@@ -19,6 +19,10 @@ tidy:
 test:
 	go test -v -race ./...
 
+.PHONY: test-debug-server
+test-debug:
+	cd pkg/server && go test -v -race -debug=true
+
 LOCAL_TAG ?= v0.0.1
 
 .PHONY: build-local-image
@@ -48,6 +52,10 @@ health-probe:
 .PHONY: evans
 evans:
 	evans --proto ./contracts/v1/record.proto --host 127.0.0.1 --port 8400
+
+.PHONY: start-server
+start-server:
+	go run ./cmd/serve
 
 .PHONY: teardown-local-container
 teardown-local-container:

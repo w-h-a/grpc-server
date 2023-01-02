@@ -18,6 +18,12 @@ To generate a grpc client:
 make evans
 ```
 
+If you want to run evans while seeing the server's logs, currently you need to run the server outside of the k8s cluster:
+
+```bash
+make start-server
+```
+
 To teardown:
 
 ```bash
