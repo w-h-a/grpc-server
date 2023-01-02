@@ -12,21 +12,11 @@ To check if server is running:
 make health-probe
 ```
 
-To run consume stream:
+To generate a grpc client:
 
 ```bash
-go run ./cmd/consume_stream
+make evans
 ```
-
-To produce/produce stream/consume:
-
-```bash
-go run ./cmd/produce
-go run ./cmd/produce_stream -value "foo" -value "bar" -value <string>
-go run ./cmd/consume
-```
-
-For help, run any of the above `go run` commands with `-h` appended to the end.
 
 To teardown:
 

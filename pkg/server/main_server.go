@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	healthsrv "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
 )
 
 type grpcServer struct {
@@ -23,6 +24,8 @@ func NewGRPCServer(config *Config, opts ...grpc.ServerOption) (*grpc.Server, err
 
 	srv := &grpcServer{Config: config}
 	contracts.RegisterEndpointsServer(gsrv, srv)
+
+	reflection.Register(gsrv)
 
 	return gsrv, nil
 }
