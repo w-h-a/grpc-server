@@ -34,11 +34,12 @@ func NewGRPCServer(config *Config, opts ...grpc.ServerOption) (*grpc.Server, err
 		),
 	}
 
-	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 	err := view.Register(ocgrpc.DefaultServerViews...)
 	if err != nil {
 		return nil, err
 	}
+
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 
 	opts = append(opts,
 		grpc.StreamInterceptor(
