@@ -19,6 +19,12 @@ To generate a grpc client:
 make evans
 ```
 
+For now, metrics and traces are exported to the `/tmp` directory in the container:
+
+```bash
+make exec-telemetry
+```
+
 If you want to run evans while seeing the server's logs and you don't want to run the above `k8s-server-logs` cmd:
 
 ```bash
