@@ -57,6 +57,11 @@ health-probe:
 evans:
 	evans --proto ./contracts/v1/record.proto --host 127.0.0.1 --port 8400
 
+.PHONY: exec-telemetry
+exec-telemetry:
+	$(eval POD_NAME=$(shell kubectl get pods -o name))
+	kubectl exec -it $(POD_NAME) -- sh
+
 .PHONY: start-server
 start-server:
 	go run ./cmd/serve
