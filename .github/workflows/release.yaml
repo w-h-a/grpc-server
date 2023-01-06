@@ -14,6 +14,6 @@ jobs:
           curl -OL https://github.com/convco/convco/releases/download/v0.3.12/convco-ubuntu.zip
           unzip convco-ubuntu.zip -d /usr/local/bin && chmod +x /usr/local/bin/convco
           export CURRENT_VERSION=v$(convco version --prefix "v")
-          export NEXT_VERSION=v$(convco version --bump --prefix "v")
+          export NEXT_VERSION=v$(convco version --major --prefix "v")
           git tag -a ${NEXT_VERSION} -m ${NEXT_VERSION} && git push origin ${NEXT_VERSION}
           convco changelog --max-versions 1 | gh release create ${NEXT_VERSION} -F -
