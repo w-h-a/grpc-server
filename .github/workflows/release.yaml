@@ -7,13 +7,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with: { fetch-depth: 0 }
-      - name: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GHA_TOKEN }}
-        run: |-
-          curl -OL https://github.com/convco/convco/releases/download/v0.3.12/convco-ubuntu.zip
-          unzip convco-ubuntu.zip -d /usr/local/bin && chmod +x /usr/local/bin/convco
-          export CURRENT_VERSION=v$(convco version --prefix "v")
-          export NEXT_VERSION=v$(convco version --bump --prefix "v")
-          git tag -a ${NEXT_VERSION} -m ${NEXT_VERSION} && git push origin ${NEXT_VERSION}
-          convco changelog --max-versions 1 | gh release create ${NEXT_VERSION} -F -
+      - uses: ./.github/actions/create-release
+        with: { github_token: '${{ secrets.GHA_TOKEN }}' }
+        

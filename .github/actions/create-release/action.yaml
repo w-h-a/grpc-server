@@ -1,0 +1,47 @@
+description: create an immutable semver'd release based on conventional commits
+inputs:
+  always_increment:
+    default: "true"
+    description: "always increment the patch version regardless of the commit message"
+    required: false
+  convco_version:
+    default: v0.3.12
+    description: version for the convco package
+    required: false
+  github_token:
+    description: a github token with write access to the repo
+    required: true
+
+name: create-release
+runs:
+  steps:
+    - id: install_convco
+      run: |-
+        curl -OL https://github.com/convco/convco/releases/download/${{inputs.convco_version}}/convco-ubuntu.zip
+        unzip convco-ubuntu.zip -d /usr/local/bin && chmod +x /usr/local/bin/convco
+      shell: bash
+    - id: export_versions
+      run: |-
+        export CURRENT_VERSION=v$(convco version)
+        export BUMP_VERSION=v$(convco version --bump)
+        export PATCH_VERSION=v$([[ "$(convco version --bump)" == "$(convco version)" ]] && convco version --patch || convco version --bump)
+        export RELEASE_VERSION=$([[ "${{inputs.always_increment}}" == "true" ]] && echo $PATCH_VERSION || echo $BUMP_VERSION)
+        printenv | grep VERSION
+        echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+      shell: bash
+    - env:
+        GITHUB_TOKEN: ${{inputs.github_token}}
+      id: release_version
+      if: ${{steps.export_versions.outputs.RELEASE_VERSION != steps.export_versions.outputs.CURRENT_VERSION}}
+      run: |-
+        git config user.email "github-action@users.noreply.github.com"
+        git config user.name "GitHub Actions"
+        export MAJOR_VERSION=$(echo ${{steps.export_versions.outputs.RELEASE_VERSION}} | cut -d. -f1)
+        git tag -a ${{steps.export_versions.outputs.RELEASE_VERSION}} -m ${{steps.export_versions.outputs.RELEASE_VERSION}}
+        git push --follow-tags
+        git tag -f -a $MAJOR_VERSION -m $MAJOR_VERSION
+        git push -f --follow-tags
+        convco changelog --max-versions 1 --skip-empty | gh release create ${NEXT_VERSION} -F -
+      shell: bash
+  using: composite
