@@ -42,6 +42,6 @@ runs:
         git push --follow-tags
         git tag -f -a $MAJOR_VERSION -m $MAJOR_VERSION
         git push -f --follow-tags
-        convco changelog --max-versions 1 --skip-empty | gh release create ${NEXT_VERSION} -F -
+        convco changelog --max-versions 1 --skip-empty | gh release create ${{steps.export_versions.outputs.RELEASE_VERSION}} -F -
       shell: bash
   using: composite
