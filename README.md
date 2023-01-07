@@ -36,7 +36,3 @@ To teardown:
 ```bash
 make teardown-local-container delete-kind
 ```
-
-fix
-
-feat
